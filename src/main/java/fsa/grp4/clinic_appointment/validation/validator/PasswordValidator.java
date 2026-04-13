@@ -1,6 +1,6 @@
 package fsa.grp4.clinic_appointment.validation.validator;
 
-import com.tuda24.steps.validation.annotation.ValidPassword;
+import fsa.grp4.clinic_appointment.validation.annotation.ValidPassword;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
