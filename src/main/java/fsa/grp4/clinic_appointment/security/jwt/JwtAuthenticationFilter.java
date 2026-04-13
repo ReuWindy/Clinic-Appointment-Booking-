@@ -1,6 +1,6 @@
 package fsa.grp4.clinic_appointment.security.jwt;
 
-import fsa.grp4.clinic_appointment.security.dto.UserDetailsServiceImpl;
+import fsa.grp4.clinic_appointment.security.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,5 +1,6 @@
 package fsa.grp4.clinic_appointment.dto.user;
 
+import fsa.grp4.clinic_appointment.entity.Role;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -14,21 +15,19 @@ import java.util.UUID;
 @Builder
 public class UserResponse {
 
-    private UUID id;
+    private int id;
     private String username;
 
-    private String firstName;
-    private String lastName;
+    private String fullName;
 
     private boolean gender;
     private String email;
     private String phoneNumber;
 
-    private LocalDate dateOfBirth;
     private boolean active;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private Set<String> roles;
+    private Role role;
 }

@@ -1,10 +1,14 @@
 package fsa.grp4.clinic_appointment.security.jwt;
 
+import fsa.grp4.clinic_appointment.entity.RefreshToken;
 import fsa.grp4.clinic_appointment.entity.User;
 import fsa.grp4.clinic_appointment.exception.NotFoundException;
+import fsa.grp4.clinic_appointment.repository.contract.IUserRepository;
+import fsa.grp4.clinic_appointment.security.dto.LoginRequest;
 import fsa.grp4.clinic_appointment.security.dto.LoginResponse;
 import fsa.grp4.clinic_appointment.security.dto.LogoutResponse;
 import fsa.grp4.clinic_appointment.security.dto.RefreshTokenRequest;
+import fsa.grp4.clinic_appointment.security.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,9 +20,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class JwtTokenService {
+
     private final JwtTokenManager jwtTokenManager;
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
 
     public LoginResponse login(LoginRequest loginRequest) {
@@ -34,7 +39,7 @@ public class JwtTokenService {
             throw new RuntimeException("Wrong username or password!");
         }
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.getByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (!user.getIsActive()) {
@@ -42,7 +47,6 @@ public class JwtTokenService {
         }
 
         String accessToken = jwtTokenManager.generateAccessToken(user);
-
         RefreshToken refreshToken = refreshTokenService.create(user);
 
         return new LoginResponse(
@@ -58,7 +62,6 @@ public class JwtTokenService {
         RefreshToken oldToken = refreshTokenService.verify(request.getRefreshToken());
 
         String newAccessToken = jwtTokenManager.generateAccessToken(oldToken.getUser());
-
         RefreshToken newRefreshToken = refreshTokenService.rotate(oldToken);
 
         return new LoginResponse(

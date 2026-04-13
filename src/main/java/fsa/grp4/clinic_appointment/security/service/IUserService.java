@@ -6,10 +6,10 @@ import fsa.grp4.clinic_appointment.security.dto.*;
 
 import java.util.List;
 
-public interface UserService {
+public interface IUserService {
     User findByUsername(String username);
 
-    List<UserResponse> listAllUser();
+    List<UserResponse> getAllUser();
 
     RegistrationResponse registration(RegistrationRequest registrationRequest);
 
