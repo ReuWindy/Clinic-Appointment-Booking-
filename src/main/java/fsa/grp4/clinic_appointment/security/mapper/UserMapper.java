@@ -17,10 +17,6 @@ public interface UserMapper {
 
     AuthenticatedUserDto convertToAuthenticatedUserDto(User user);
 
-    @Mapping(source = "phone", target = "phoneNumber")
-    @Mapping(source = "isActive", target = "active")
-    UserResponse toCreateResponse(User user);
-
     UpdateUserResponse toUpdateResponse(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
