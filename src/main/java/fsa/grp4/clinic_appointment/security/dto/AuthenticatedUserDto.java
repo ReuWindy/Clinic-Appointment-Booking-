@@ -4,8 +4,6 @@ import fsa.grp4.clinic_appointment.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
-
 @Getter
 @Setter
 @NoArgsConstructor

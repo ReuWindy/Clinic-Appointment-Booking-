@@ -1,7 +1,6 @@
 package fsa.grp4.clinic_appointment.security.service;
 
 import fsa.grp4.clinic_appointment.security.dto.AuthenticatedUserDto;
-import fsa.grp4.clinic_appointment.security.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

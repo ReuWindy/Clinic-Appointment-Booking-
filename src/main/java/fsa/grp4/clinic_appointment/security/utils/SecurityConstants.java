@@ -4,24 +4,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class SecurityConstants {
-    // FIXME : Customize security constants for your application.
+public final class SecurityConstants {
 
-    /**
-     * Token expiration time 1 days.
-     */
-    public static final long EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000L;
-
-    /**
-     * Secret key for signature
-     */
-    public static final String SECRET_KEY = "secret";
-
-    /**
-     * The company who provided token.
-     * You can customize issuer name, this is given as an example.
-     */
-    public static final String ISSUER = "facebook.com/reuwindy";
+    public static final String AUTH_API_BASE_URI = "/api/auth";
 
     /**
      * Token Prefix
@@ -36,9 +21,9 @@ public class SecurityConstants {
      */
     public static final String HEADER_STRING = "Authorization";
 
-    public static final String LOGIN_REQUEST_URI = "/login";
+    public static final String LOGIN_REQUEST_URI = AUTH_API_BASE_URI + "/login";
 
-    public static final String REGISTRATION_REQUEST_URI = "/register";
+    public static final String REGISTRATION_REQUEST_URI = AUTH_API_BASE_URI + "/register";
 
     private SecurityConstants() {
 

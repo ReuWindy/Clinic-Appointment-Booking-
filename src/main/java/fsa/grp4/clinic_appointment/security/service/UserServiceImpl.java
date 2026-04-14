@@ -8,7 +8,6 @@ import fsa.grp4.clinic_appointment.exception.ConflictException;
 import fsa.grp4.clinic_appointment.security.dto.AuthenticatedUserDto;
 import fsa.grp4.clinic_appointment.security.dto.RegistrationRequest;
 import fsa.grp4.clinic_appointment.security.dto.RegistrationResponse;
-import fsa.grp4.clinic_appointment.security.jwt.JwtTokenManager;
 import fsa.grp4.clinic_appointment.security.mapper.UserMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,13 +17,11 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements IUserService {
-    private final JwtTokenManager jwtTokenManager;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserMapper userMapper;
     private final IUserDAO userDAO;
 
-    public UserServiceImpl(JwtTokenManager jwtTokenManager, BCryptPasswordEncoder bCryptPasswordEncoder, UserMapper userMapper, IUserDAO userDAO) {
-        this.jwtTokenManager = jwtTokenManager;
+    public UserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, UserMapper userMapper, IUserDAO userDAO) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userMapper = userMapper;
         this.userDAO = userDAO;
@@ -43,7 +40,6 @@ public class UserServiceImpl implements IUserService {
     public List<UserResponse> getAllUser() {
         return userMapper.toUserResponses(userDAO.getAll());
     }
-
 
     @Override
     public RegistrationResponse registration(RegistrationRequest registrationRequest) {
@@ -76,6 +72,5 @@ public class UserServiceImpl implements IUserService {
         final User user = findByUsername(username);
         return userMapper.convertToAuthenticatedUserDto(user);
     }
-
 
 }
