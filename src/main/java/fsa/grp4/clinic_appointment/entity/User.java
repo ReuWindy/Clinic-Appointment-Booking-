@@ -1,7 +1,6 @@
 package fsa.grp4.clinic_appointment.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

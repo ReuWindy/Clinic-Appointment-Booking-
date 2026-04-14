@@ -11,89 +11,88 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 @Transactional
 public class RefreshTokenRepositoryImpl
-        extends GenericRepositoryImpl<RefreshToken, Integer>
-        implements IRefreshTokenRepository {
+                extends GenericRepositoryImpl<RefreshToken, Integer>
+                implements IRefreshTokenRepository {
 
-    public RefreshTokenRepositoryImpl() {
-        super(RefreshToken.class);
-    }
-
-    @Override
-    public Optional<RefreshToken> getByTokenHash(String tokenHash) {
-        try {
-            String jpql = "SELECT r FROM RefreshToken r " +
-                    "JOIN FETCH r.user " +
-                    "WHERE r.tokenHash = :tokenHash";
-
-            RefreshToken refreshToken = em.createQuery(jpql, RefreshToken.class)
-                    .setParameter("tokenHash", tokenHash)
-                    .getSingleResult();
-
-            return Optional.of(refreshToken);
-        } catch (NoResultException ex) {
-            return Optional.empty();
+        public RefreshTokenRepositoryImpl() {
+                super(RefreshToken.class);
         }
-    }
 
-    @Override
-    public List<RefreshToken> getByUser(User user) {
-        String jpql = "SELECT r FROM RefreshToken r " +
-                "WHERE r.user = :user " +
-                "ORDER BY r.createdAt DESC";
+        @Override
+        public Optional<RefreshToken> getByTokenHash(String tokenHash) {
+                try {
+                        String jpql = "SELECT r FROM RefreshToken r " +
+                                        "JOIN FETCH r.user " +
+                                        "WHERE r.tokenHash = :tokenHash";
 
-        return em.createQuery(jpql, RefreshToken.class)
-                .setParameter("user", user)
-                .getResultList();
-    }
+                        RefreshToken refreshToken = em.createQuery(jpql, RefreshToken.class)
+                                        .setParameter("tokenHash", tokenHash)
+                                        .getSingleResult();
 
-    @Override
-    public List<RefreshToken> getActiveTokensByUser(User user) {
-        String jpql = "SELECT r FROM RefreshToken r " +
-                "WHERE r.user = :user " +
-                "AND r.revoked = false " +
-                "AND r.expiryDate > :now " +
-                "ORDER BY r.createdAt DESC";
+                        return Optional.of(refreshToken);
+                } catch (NoResultException ex) {
+                        return Optional.empty();
+                }
+        }
 
-        return em.createQuery(jpql, RefreshToken.class)
-                .setParameter("user", user)
-                .setParameter("now", LocalDateTime.now())
-                .getResultList();
-    }
+        @Override
+        public List<RefreshToken> getByUser(User user) {
+                String jpql = "SELECT r FROM RefreshToken r " +
+                                "WHERE r.user = :user " +
+                                "ORDER BY r.createdAt DESC";
 
-    @Override
-    public void revokeByTokenHash(String tokenHash) {
-        String jpql = "UPDATE RefreshToken r " +
-                "SET r.revoked = true " +
-                "WHERE r.tokenHash = :tokenHash";
+                return em.createQuery(jpql, RefreshToken.class)
+                                .setParameter("user", user)
+                                .getResultList();
+        }
 
-        em.createQuery(jpql)
-                .setParameter("tokenHash", tokenHash)
-                .executeUpdate();
-    }
+        @Override
+        public List<RefreshToken> getActiveTokensByUser(User user) {
+                String jpql = "SELECT r FROM RefreshToken r " +
+                                "WHERE r.user = :user " +
+                                "AND r.revoked = false " +
+                                "AND r.expiryDate > :now " +
+                                "ORDER BY r.createdAt DESC";
 
-    @Override
-    public void revokeAllByUser(User user) {
-        String jpql = "UPDATE RefreshToken r " +
-                "SET r.revoked = true " +
-                "WHERE r.user = :user AND r.revoked = false";
+                return em.createQuery(jpql, RefreshToken.class)
+                                .setParameter("user", user)
+                                .setParameter("now", LocalDateTime.now())
+                                .getResultList();
+        }
 
-        em.createQuery(jpql)
-                .setParameter("user", user)
-                .executeUpdate();
-    }
+        @Override
+        public void revokeByTokenHash(String tokenHash) {
+                String jpql = "UPDATE RefreshToken r " +
+                                "SET r.revoked = true " +
+                                "WHERE r.tokenHash = :tokenHash";
 
-    @Override
-    public void deleteExpiredTokens(LocalDateTime now) {
-        String jpql = "DELETE FROM RefreshToken r " +
-                "WHERE r.expiryDate <= :now OR r.revoked = true";
+                em.createQuery(jpql)
+                                .setParameter("tokenHash", tokenHash)
+                                .executeUpdate();
+        }
 
-        em.createQuery(jpql)
-                .setParameter("now", now)
-                .executeUpdate();
-    }
+        @Override
+        public void revokeAllByUser(User user) {
+                String jpql = "UPDATE RefreshToken r " +
+                                "SET r.revoked = true " +
+                                "WHERE r.user = :user AND r.revoked = false";
+
+                em.createQuery(jpql)
+                                .setParameter("user", user)
+                                .executeUpdate();
+        }
+
+        @Override
+        public void deleteExpiredTokens(LocalDateTime now) {
+                String jpql = "DELETE FROM RefreshToken r " +
+                                "WHERE r.expiryDate <= :now OR r.revoked = true";
+
+                em.createQuery(jpql)
+                                .setParameter("now", now)
+                                .executeUpdate();
+        }
 }

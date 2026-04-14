@@ -2,7 +2,6 @@ package fsa.grp4.clinic_appointment.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +25,7 @@ public class RefreshToken {
     private LocalDateTime expiryDate;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean revoked = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
