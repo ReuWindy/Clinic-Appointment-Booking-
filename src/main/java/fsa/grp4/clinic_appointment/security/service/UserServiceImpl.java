@@ -13,6 +13,7 @@ import fsa.grp4.clinic_appointment.security.jwt.JwtTokenManager;
 import fsa.grp4.clinic_appointment.security.mapper.UserMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +48,7 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
+    @Transactional
     public RegistrationResponse registration(RegistrationRequest registrationRequest) {
         Optional<User> u = userDAO.existsByPhoneNumber(registrationRequest.getPhone());
         if (u.isPresent()) {
@@ -59,11 +61,13 @@ public class UserServiceImpl implements IUserService {
         }
 
         User user = User.builder()
+                .fullName(buildFullName(registrationRequest))
                 .username(registrationRequest.getUsername())
                 .password(bCryptPasswordEncoder.encode(registrationRequest.getPassword()))
                 .authProvider(AuthProvider.LOCAL)
                 .phone(registrationRequest.getPhone())
                 .email(registrationRequest.getEmail())
+                .address(defaultString(registrationRequest.getAddress()))
                 .gender(registrationRequest.isGender())
                 .role(Role.PATIENT)
                 .build();
@@ -71,6 +75,15 @@ public class UserServiceImpl implements IUserService {
         userDAO.add(user);
 
         return new RegistrationResponse("Registration successful! " + user.getUsername());
+    }
+
+    private String buildFullName(RegistrationRequest registrationRequest) {
+        return (defaultString(registrationRequest.getFirstName()) + " " +
+                defaultString(registrationRequest.getLastName())).trim();
+    }
+
+    private String defaultString(String value) {
+        return value == null ? "" : value.trim();
     }
 
     @Override
