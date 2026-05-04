@@ -15,13 +15,13 @@ import fsa.grp4.clinic_appointment.security.dto.RefreshTokenRequest;
 import fsa.grp4.clinic_appointment.security.google.GoogleTokenVerifier;
 import fsa.grp4.clinic_appointment.security.google.GoogleUserInfo;
 import fsa.grp4.clinic_appointment.security.service.RefreshTokenService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -34,6 +34,7 @@ public class JwtTokenService {
     private final RefreshTokenService refreshTokenService;
     private final GoogleTokenVerifier googleTokenVerifier;
 
+    @Transactional
     public LoginResponse login(LoginRequest loginRequest) {
 
         String username = loginRequest.getUsername();
@@ -63,7 +64,7 @@ public class JwtTokenService {
 
         return new LoginResponse(
                 accessToken,
-                refreshToken.getTokenHash(),
+                refreshToken.getRawToken(),
                 user.getUsername(),
                 user.getId()
         );
@@ -89,7 +90,7 @@ public class JwtTokenService {
 
         return new LoginResponse(
                 accessToken,
-                refreshToken.getTokenHash(),
+                refreshToken.getRawToken(),
                 user.getUsername(),
                 user.getId()
         );
@@ -117,6 +118,7 @@ public class JwtTokenService {
         return userRepository.add(user);
     }
 
+    @Transactional
     public LoginResponse refreshToken(RefreshTokenRequest request) {
 
         RefreshToken oldToken = refreshTokenService.verify(request.getRefreshToken());
@@ -126,12 +128,13 @@ public class JwtTokenService {
 
         return new LoginResponse(
                 newAccessToken,
-                newRefreshToken.getTokenHash(),
+                newRefreshToken.getRawToken(),
                 oldToken.getUser().getUsername(),
                 oldToken.getUser().getId()
         );
     }
 
+    @Transactional
     public LogoutResponse logout(RefreshTokenRequest request) {
 
         refreshTokenService.revoke(request.getRefreshToken());
