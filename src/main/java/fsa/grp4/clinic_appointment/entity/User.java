@@ -24,8 +24,13 @@ public class User extends BaseEntity {
     @Column(nullable = false, name = "user_name")
     String username;
 
-    @Column(nullable = false, name = "user_password")
+    @Column(name = "user_password")
     String password;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, name = "auth_provider")
+    AuthProvider authProvider = AuthProvider.LOCAL;
 
     @Column(nullable = false, name = "email")
     String email;
@@ -42,4 +47,10 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     Role role;
 
+    @PrePersist
+    void setDefaults() {
+        if (authProvider == null) {
+            authProvider = AuthProvider.LOCAL;
+        }
+    }
 }
