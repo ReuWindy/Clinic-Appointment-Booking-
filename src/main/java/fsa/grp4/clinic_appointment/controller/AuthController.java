@@ -64,6 +64,25 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PostMapping("/google")
+    public ResponseEntity<ApiSuccessResponse<LoginResponse>> googleLogin(
+            @RequestBody @Valid GoogleLoginRequest request
+    ) {
+
+        LoginResponse responseData = jwtTokenService.loginWithGoogle(request);
+
+        ApiSuccessResponse<LoginResponse> response =
+                ApiSuccessResponse.<LoginResponse>builder()
+                        .message("Login with Google successfully")
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK.name())
+                        .timestamp(LocalDateTime.now())
+                        .data(responseData)
+                        .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @PostMapping("/refresh")
     public ResponseEntity<ApiSuccessResponse<LoginResponse>> refresh(
             @RequestBody @Valid RefreshTokenRequest request

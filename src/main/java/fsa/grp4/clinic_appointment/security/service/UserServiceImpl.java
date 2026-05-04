@@ -2,6 +2,7 @@ package fsa.grp4.clinic_appointment.security.service;
 
 import fsa.grp4.clinic_appointment.dao.contract.IUserDAO;
 import fsa.grp4.clinic_appointment.dto.user.UserResponse;
+import fsa.grp4.clinic_appointment.entity.AuthProvider;
 import fsa.grp4.clinic_appointment.entity.Role;
 import fsa.grp4.clinic_appointment.entity.User;
 import fsa.grp4.clinic_appointment.exception.ConflictException;
@@ -60,6 +61,7 @@ public class UserServiceImpl implements IUserService {
         User user = User.builder()
                 .username(registrationRequest.getUsername())
                 .password(bCryptPasswordEncoder.encode(registrationRequest.getPassword()))
+                .authProvider(AuthProvider.LOCAL)
                 .phone(registrationRequest.getPhone())
                 .email(registrationRequest.getEmail())
                 .gender(registrationRequest.isGender())
