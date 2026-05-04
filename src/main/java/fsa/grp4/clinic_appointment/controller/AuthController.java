@@ -5,18 +5,25 @@ import fsa.grp4.clinic_appointment.security.dto.*;
 import fsa.grp4.clinic_appointment.security.jwt.JwtTokenService;
 import fsa.grp4.clinic_appointment.security.service.UserServiceImpl;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private static final Duration ACCESS_TOKEN_COOKIE_MAX_AGE = Duration.ofHours(24);
+    private static final Duration REFRESH_TOKEN_COOKIE_MAX_AGE = Duration.ofDays(7);
 
     private final JwtTokenService jwtTokenService;
     private final UserServiceImpl userService;
@@ -61,7 +68,7 @@ public class AuthController {
                         .data(responseData)
                         .build();
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return withAuthCookies(responseData, response);
     }
 
     @PostMapping("/google")
@@ -80,14 +87,16 @@ public class AuthController {
                         .data(responseData)
                         .build();
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return withAuthCookies(responseData, response);
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiSuccessResponse<LoginResponse>> refresh(
-            @RequestBody @Valid RefreshTokenRequest request
+            @RequestBody(required = false) RefreshTokenRequest request,
+            @CookieValue(name = "refreshToken", required = false) String refreshTokenCookie
     ) {
 
+        request = new RefreshTokenRequest(resolveRefreshToken(request, refreshTokenCookie));
         LoginResponse responseData = jwtTokenService.refreshToken(request);
 
         ApiSuccessResponse<LoginResponse> response =
@@ -99,14 +108,16 @@ public class AuthController {
                         .data(responseData)
                         .build();
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return withAuthCookies(responseData, response);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<ApiSuccessResponse<LogoutResponse>> logout(
-            @RequestBody @Valid RefreshTokenRequest request
+            @RequestBody(required = false) RefreshTokenRequest request,
+            @CookieValue(name = "refreshToken", required = false) String refreshTokenCookie
     ) {
 
+        request = new RefreshTokenRequest(resolveRefreshToken(request, refreshTokenCookie));
         LogoutResponse responseData = jwtTokenService.logout(request);
 
         ApiSuccessResponse<LogoutResponse> response =
@@ -118,6 +129,59 @@ public class AuthController {
                         .data(responseData)
                         .build();
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, clearCookie("accessToken").toString())
+                .header(HttpHeaders.SET_COOKIE, clearCookie("refreshToken").toString())
+                .body(response);
+    }
+
+    private ResponseEntity<ApiSuccessResponse<LoginResponse>> withAuthCookies(
+            LoginResponse responseData,
+            ApiSuccessResponse<LoginResponse> response
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, createCookie(
+                        "accessToken",
+                        responseData.getAccessToken(),
+                        ACCESS_TOKEN_COOKIE_MAX_AGE
+                ).toString())
+                .header(HttpHeaders.SET_COOKIE, createCookie(
+                        "refreshToken",
+                        responseData.getRefreshToken(),
+                        REFRESH_TOKEN_COOKIE_MAX_AGE
+                ).toString())
+                .body(response);
+    }
+
+    private ResponseCookie createCookie(String name, String value, Duration maxAge) {
+        return ResponseCookie.from(name, value)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(maxAge)
+                .build();
+    }
+
+    private ResponseCookie clearCookie(String name) {
+        return ResponseCookie.from(name, "")
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(Duration.ZERO)
+                .build();
+    }
+
+    private String resolveRefreshToken(RefreshTokenRequest request, String refreshTokenCookie) {
+        if (request != null && request.getRefreshToken() != null && !request.getRefreshToken().isBlank()) {
+            return request.getRefreshToken();
+        }
+
+        if (refreshTokenCookie != null && !refreshTokenCookie.isBlank()) {
+            return refreshTokenCookie;
+        }
+
+        throw new IllegalArgumentException("Refresh token is required");
     }
 }

@@ -34,7 +34,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         RefreshToken saved = refreshTokenDAO.add(refreshToken);
 
-        saved.setTokenHash(rawToken);
+        saved.setRawToken(rawToken);
 
         return saved;
     }
