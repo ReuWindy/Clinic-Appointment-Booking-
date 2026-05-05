@@ -1,79 +1,79 @@
 package fsa.grp4.clinic_appointment.service.implementation;
 
-import fsa.grp4.clinic_appointment.dao.contract.ISpecialityDAO;
-import fsa.grp4.clinic_appointment.dto.speciality.SpecialityRequest;
-import fsa.grp4.clinic_appointment.dto.speciality.SpecialityResponse;
-import fsa.grp4.clinic_appointment.entity.Speciality;
-import fsa.grp4.clinic_appointment.exception.ConflictException;
-import fsa.grp4.clinic_appointment.exception.NotFoundException;
-import fsa.grp4.clinic_appointment.mapper.SpecialityMapper;
-import fsa.grp4.clinic_appointment.service.contract.IAdminService;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import fsa.grp4.clinic_appointment.dao.contract.ISpecialtyDAO;
+import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyRequest;
+import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyResponse;
+import fsa.grp4.clinic_appointment.entity.Specialty;
+import fsa.grp4.clinic_appointment.exception.ConflictException;
+import fsa.grp4.clinic_appointment.exception.NotFoundException;
+import fsa.grp4.clinic_appointment.mapper.SpecialtyMapper;
+import fsa.grp4.clinic_appointment.service.contract.IAdminService;
 
 @Service
 @Transactional
 public class AdminServiceImpl implements IAdminService {
-    private final ISpecialityDAO specialityDAO;
-    private final SpecialityMapper specialityMapper;
+    private final ISpecialtyDAO specialtyDAO;
+    private final SpecialtyMapper specialtyMapper;
 
-    public AdminServiceImpl(ISpecialityDAO specialityDAO, SpecialityMapper specialityMapper) {
-        this.specialityDAO = specialityDAO;
-        this.specialityMapper = specialityMapper;
+    public AdminServiceImpl(ISpecialtyDAO specialtyDAO, SpecialtyMapper specialtyMapper) {
+        this.specialtyDAO = specialtyDAO;
+        this.specialtyMapper = specialtyMapper;
     }
 
     @Override
-    public void createSpeciality(SpecialityRequest specialityRequest) {
-        if (specialityRequest == null) {
-            throw new IllegalArgumentException("Speciality request cannot be null");
+    public void createSpecialty(SpecialtyRequest specialtyRequest) {
+        if (specialtyRequest == null) {
+            throw new IllegalArgumentException("Specialty request cannot be null");
         }
-        if (specialityDAO.existsByName(specialityRequest.getName())) {
-            throw new ConflictException("Speciality name already exists");
+        if (specialtyDAO.existsByName(specialtyRequest.getName())) {
+            throw new ConflictException("Specialty name already exists");
         }
-        Speciality speciality = specialityMapper.toEntity(specialityRequest);
-        speciality.setId(0);
-        specialityDAO.add(speciality);
+        Specialty specialty = specialtyMapper.toEntity(specialtyRequest);
+        specialty.setId(0);
+        specialtyDAO.add(specialty);
     }
 
     @Override
-    public void updateSpeciality(int id, SpecialityRequest specialityRequest) {
-        if (specialityRequest == null) {
-            throw new IllegalArgumentException("Speciality request cannot be null");
+    public void updateSpecialty(int id, SpecialtyRequest specialtyRequest) {
+        if (specialtyRequest == null) {
+            throw new IllegalArgumentException("Specialty request cannot be null");
         }
 
-        Optional<Speciality> optionalSpeciality = specialityDAO.findById(id);
-        if (optionalSpeciality.isEmpty()) {
-            throw new NotFoundException("Speciality not found with id: " + id);
+        Optional<Specialty> optionalSpecialty = specialtyDAO.findById(id);
+        if (optionalSpecialty.isEmpty()) {
+            throw new NotFoundException("Specialty not found with id: " + id);
         }
 
-        Speciality existingSpeciality = optionalSpeciality.get();
+        Specialty existingSpecialty = optionalSpecialty.get();
 
-        if (!existingSpeciality.getName().equalsIgnoreCase(specialityRequest.getName()) &&
-                specialityDAO.existsByName(specialityRequest.getName())) {
-            throw new ConflictException("Speciality name already exists");
+        if (!existingSpecialty.getName().equalsIgnoreCase(specialtyRequest.getName()) &&
+                specialtyDAO.existsByName(specialtyRequest.getName())) {
+            throw new ConflictException("Specialty name already exists");
         }
 
-        existingSpeciality.setName(specialityRequest.getName());
-        existingSpeciality.setDescription(specialityRequest.getDescription());
+        existingSpecialty.setName(specialtyRequest.getName());
+        existingSpecialty.setDescription(specialtyRequest.getDescription());
 
-        specialityDAO.update(existingSpeciality);
+        specialtyDAO.update(existingSpecialty);
     }
 
     @Override
-    public void deleteSpeciality(int id) {
-        Optional<Speciality> optionalSpeciality = specialityDAO.findById(id);
-        if (optionalSpeciality.isEmpty()) {
-            throw new NotFoundException("Speciality not found with id: " + id);
+    public void deleteSpecialty(int id) {
+        Optional<Specialty> optionalSpecialty = specialtyDAO.findById(id);
+        if (optionalSpecialty.isEmpty()) {
+            throw new NotFoundException("Specialty not found with id: " + id);
         }
-        specialityDAO.deleteById(id);
+        specialtyDAO.deleteById(id);
     }
 
     @Override
-    public List<SpecialityResponse> getAllSpecialities() {
-        return specialityMapper.toResponses(specialityDAO.getAll());
+    public List<SpecialtyResponse> getAllSpecialties() {
+        return specialtyMapper.toResponses(specialtyDAO.getAll());
     }
 }

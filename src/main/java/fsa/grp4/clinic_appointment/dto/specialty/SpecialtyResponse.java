@@ -1,4 +1,4 @@
-package fsa.grp4.clinic_appointment.dto.speciality;
+package fsa.grp4.clinic_appointment.dto.specialty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecialityResponse {
+public class SpecialtyResponse {
     private int id;
     private String name;
     private String description;

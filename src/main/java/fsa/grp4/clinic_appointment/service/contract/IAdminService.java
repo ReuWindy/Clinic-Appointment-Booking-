@@ -1,16 +1,16 @@
 package fsa.grp4.clinic_appointment.service.contract;
 
-import fsa.grp4.clinic_appointment.dto.speciality.SpecialityRequest;
-import fsa.grp4.clinic_appointment.dto.speciality.SpecialityResponse;
-
 import java.util.List;
 
+import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyRequest;
+import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyResponse;
+
 public interface IAdminService {
-    void createSpeciality(SpecialityRequest specialityRequest);
+    void createSpecialty(SpecialtyRequest specialtyRequest);
 
-    void updateSpeciality(int id, SpecialityRequest specialityRequest);
+    void updateSpecialty(int id, SpecialtyRequest specialtyRequest);
 
-    void deleteSpeciality(int id);
+    void deleteSpecialty(int id);
 
-    List<SpecialityResponse> getAllSpecialities();
+    List<SpecialtyResponse> getAllSpecialties();
 }
