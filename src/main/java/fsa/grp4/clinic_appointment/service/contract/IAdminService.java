@@ -6,9 +6,9 @@ import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyRequest;
 import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyResponse;
 
 public interface IAdminService {
-    void createSpecialty(SpecialtyRequest specialtyRequest);
+    SpecialtyResponse createSpecialty(SpecialtyRequest specialtyRequest);
 
-    void updateSpecialty(int id, SpecialtyRequest specialtyRequest);
+    SpecialtyResponse updateSpecialty(int id, SpecialtyRequest specialtyRequest);
 
     void deleteSpecialty(int id);
 

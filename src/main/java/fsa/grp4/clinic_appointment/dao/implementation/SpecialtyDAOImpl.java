@@ -17,13 +17,13 @@ public class SpecialtyDAOImpl implements ISpecialtyDAO {
     private final ISpecialtyRepository specialtyRepository;
 
     @Override
-    public void add(Specialty specialty) {
-        specialtyRepository.add(specialty);
+    public Specialty add(Specialty specialty) {
+        return specialtyRepository.add(specialty);
     }
 
     @Override
-    public void update(Specialty specialty) {
-        specialtyRepository.update(specialty);
+    public Specialty update(Specialty specialty) {
+        return specialtyRepository.update(specialty);
     }
 
     @Override

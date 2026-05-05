@@ -27,25 +27,25 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @PostMapping("/specialities")
+    @PostMapping("/specialties")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createSpecialty(@Valid @RequestBody SpecialtyRequest request) {
-        adminService.createSpecialty(request);
+    public SpecialtyResponse createSpecialty(@Valid @RequestBody SpecialtyRequest request) {
+        return adminService.createSpecialty(request);
     }
 
-    @PutMapping("/specialities/{id}")
+    @PutMapping("/specialties/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateSpecialty(@PathVariable int id, @Valid @RequestBody SpecialtyRequest request) {
-        adminService.updateSpecialty(id, request);
+    public SpecialtyResponse updateSpecialty(@PathVariable int id, @Valid @RequestBody SpecialtyRequest request) {
+        return adminService.updateSpecialty(id, request);
     }
 
-    @DeleteMapping("/specialities/{id}")
+    @DeleteMapping("/specialties/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteSpecialty(@PathVariable int id) {
         adminService.deleteSpecialty(id);
     }
 
-    @GetMapping("/specialities")
+    @GetMapping("/specialties")
     @ResponseStatus(HttpStatus.OK)
     public List<SpecialtyResponse> getAllSpecialties() {
         return adminService.getAllSpecialties();

@@ -27,7 +27,7 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public void createSpecialty(SpecialtyRequest specialtyRequest) {
+    public SpecialtyResponse createSpecialty(SpecialtyRequest specialtyRequest) {
         if (specialtyRequest == null) {
             throw new IllegalArgumentException("Specialty request cannot be null");
         }
@@ -36,11 +36,12 @@ public class AdminServiceImpl implements IAdminService {
         }
         Specialty specialty = specialtyMapper.toEntity(specialtyRequest);
         specialty.setId(0);
-        specialtyDAO.add(specialty);
+        Specialty savedSpecialty = specialtyDAO.add(specialty);
+        return specialtyMapper.toResponse(savedSpecialty);
     }
 
     @Override
-    public void updateSpecialty(int id, SpecialtyRequest specialtyRequest) {
+    public SpecialtyResponse updateSpecialty(int id, SpecialtyRequest specialtyRequest) {
         if (specialtyRequest == null) {
             throw new IllegalArgumentException("Specialty request cannot be null");
         }
@@ -60,7 +61,8 @@ public class AdminServiceImpl implements IAdminService {
         existingSpecialty.setName(specialtyRequest.getName());
         existingSpecialty.setDescription(specialtyRequest.getDescription());
 
-        specialtyDAO.update(existingSpecialty);
+        Specialty updatedSpecialty = specialtyDAO.update(existingSpecialty);
+        return specialtyMapper.toResponse(updatedSpecialty);
     }
 
     @Override

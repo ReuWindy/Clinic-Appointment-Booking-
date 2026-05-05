@@ -6,9 +6,9 @@ import java.util.Optional;
 import fsa.grp4.clinic_appointment.entity.Specialty;
 
 public interface ISpecialtyDAO {
-    void add(Specialty specialty);
+    Specialty add(Specialty specialty);
 
-    void update(Specialty specialty);
+    Specialty update(Specialty specialty);
 
     void deleteById(int id);
 

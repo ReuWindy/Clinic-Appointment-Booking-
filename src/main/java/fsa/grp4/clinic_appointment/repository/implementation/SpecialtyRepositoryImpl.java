@@ -19,9 +19,9 @@ public class SpecialtyRepositoryImpl extends GenericRepositoryImpl<Specialty, In
     @Override
     public Optional<Specialty> getByName(String name) {
         try {
-            String jpql = "SELECT s FROM Specialty s WHERE s.name = :name";
+            String jpql = "SELECT s FROM Specialty s WHERE LOWER(s.name) = LOWER(:name)";
             Specialty specialty = em.createQuery(jpql, Specialty.class)
-                    .setParameter("name", name)
+                    .setParameter("name", name.toLowerCase())
                     .getSingleResult();
             return Optional.of(specialty);
         } catch (NoResultException ex) {
