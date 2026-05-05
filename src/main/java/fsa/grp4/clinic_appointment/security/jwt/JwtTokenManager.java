@@ -39,7 +39,8 @@ public class JwtTokenManager {
     }
 
     public List<String> getRolesFromToken(String token) {
-        return getDecodedJWT(token).getClaim("roles").asList(String.class);
+        String role = getDecodedJWT(token).getClaim("role").asString();
+        return role == null ? List.of() : List.of(role);
     }
 
     public String resolveTokenFromHeader(String authorizationHeader) {
