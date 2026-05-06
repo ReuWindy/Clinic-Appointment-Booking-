@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,17 +25,20 @@ public abstract class GenericRepositoryImpl<T, ID> implements IGenericRepository
     }
 
     @Override
+    @Transactional
     public T add(T entity) {
         em.persist(entity);
         return entity;
     }
 
     @Override
+    @Transactional
     public T update(T entity) {
         return em.merge(entity);
     }
 
     @Override
+    @Transactional
     public void delete(T entity) {
         em.remove(em.contains(entity) ? entity : em.merge(entity));
     }

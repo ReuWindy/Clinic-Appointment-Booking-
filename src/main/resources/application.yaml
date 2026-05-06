@@ -3,9 +3,9 @@ spring:
     name: clinic-appointment
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/clinic_appointment
-    username: postgres
-    password: root
+    url: ${SUPABASE_DB_URL:jdbc:postgresql://aws-1-ap-south-1.pooler.supabase.com:5432/postgres?sslmode=require}
+    username: postgres.sbjnwfcjcqvtwuwrdcvt
+    password: pFOZeSZwWPDKqeM8
     driver-class-name: org.postgresql.Driver
 
     hikari:
@@ -43,3 +43,6 @@ jwt:
   secretKey: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
   issuer: tuda24
   accessTokenExpiration: 86400000
+
+google:
+  client-id: 674544856247-s4fkj638dt6rqcs154tg8dpr8sbkivp5.apps.googleusercontent.com
