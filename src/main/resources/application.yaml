@@ -3,9 +3,9 @@ spring:
     name: clinic-appointment
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/clinic_appointment
+    url: jdbc:postgresql://localhost:4080/clinic_appointment
     username: postgres
-    password: root
+    password: 120504
     driver-class-name: org.postgresql.Driver
 
     hikari:
@@ -27,7 +27,17 @@ spring:
     sql:
       init:
         mode: always
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: viethuu1205@gmail.com
+    password: gakv tyrz igjg leay
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 springdoc:
   swagger-ui:
     enabled: true
