@@ -65,5 +65,4 @@ public class UserDAOImpl implements IUserDAO {
     public Page<User> search(Specification<User> specification, Pageable pageable) {
         return userRepository.search(specification, pageable);
     }
-
 }

@@ -2,6 +2,8 @@ package fsa.grp4.clinic_appointment.controller;
 
 import java.util.List;
 
+import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorRequest;
+import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,4 +54,29 @@ public class AdminController {
     public List<SpecialtyResponse> getAllSpecialties() {
         return adminService.getAllSpecialties();
     }
+
+    @PostMapping("/doctors")
+    @ResponseStatus(HttpStatus.CREATED)
+    public AdminDoctorResponse createDoctor(@Valid @RequestBody AdminDoctorRequest request) {
+        return adminService.createDoctor(request);
+    }
+
+    @PutMapping("/doctors/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public AdminDoctorResponse updateSpecialty(@PathVariable int id, @Valid @RequestBody AdminDoctorRequest request) {
+        return adminService.updateDoctor(id, request);
+    }
+
+    @DeleteMapping("/doctors/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteDoctor(@PathVariable int id) {
+        adminService.deleteDoctor(id);
+    }
+
+    @GetMapping("/doctors")
+    @ResponseStatus(HttpStatus.OK)
+    public List<AdminDoctorResponse> getAllDoctors() {
+        return adminService.getAllDoctors();
+    }
+
 }

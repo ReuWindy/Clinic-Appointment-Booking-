@@ -12,4 +12,5 @@ public interface IUserRepository extends IGenericRepository<User, Integer> {
     Optional<User> getByEmail(String email);
     Optional<User> getByPhoneNumber(String phone);
     List<User> findAllUsers();
+    boolean existsByEmail(String email);
 }
