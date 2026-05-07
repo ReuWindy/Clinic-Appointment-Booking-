@@ -66,4 +66,11 @@ public class UserDAOImpl implements IUserDAO {
         return userRepository.search(specification, pageable);
     }
 
+    @Override
+    public Optional<User> deleteByUserName(String username) {
+        Optional<User> userOptional = userRepository.getByUsername(username);
+        userOptional.ifPresent(userRepository::delete);
+        return userOptional;
+    }
+
 }

@@ -3,8 +3,10 @@ package fsa.grp4.clinic_appointment.controller;
 import fsa.grp4.clinic_appointment.common.ApiSuccessResponse;
 import fsa.grp4.clinic_appointment.security.dto.*;
 import fsa.grp4.clinic_appointment.security.jwt.JwtTokenService;
+import fsa.grp4.clinic_appointment.security.service.AuthService;
 import fsa.grp4.clinic_appointment.security.service.UserServiceImpl;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -27,7 +29,8 @@ public class AuthController {
 
     private final JwtTokenService jwtTokenService;
     private final UserServiceImpl userService;
-
+    @Autowired
+    private AuthService authService;
     public AuthController(JwtTokenService jwtTokenService, UserServiceImpl userService) {
         this.jwtTokenService = jwtTokenService;
         this.userService = userService;
@@ -183,5 +186,32 @@ public class AuthController {
         }
 
         throw new IllegalArgumentException("Refresh token is required");
+    }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        try {
+            String message = authService.generateAndSendOtp(request.getEmail());
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody VerifyOtpRequest request) {
+        try {
+            String message = authService.verifyOtp(request);
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        try {
+            String message = authService.resetPassword(request);
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

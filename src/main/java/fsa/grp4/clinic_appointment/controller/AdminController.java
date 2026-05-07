@@ -2,6 +2,7 @@ package fsa.grp4.clinic_appointment.controller;
 
 import java.util.List;
 
+import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,5 +52,29 @@ public class AdminController {
     @ResponseStatus(HttpStatus.OK)
     public List<SpecialtyResponse> getAllSpecialties() {
         return adminService.getAllSpecialties();
+    }
+
+    @PostMapping("/receptionists")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReceptionistResponse createReceptionist(@Valid @RequestBody fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistRequest request) {
+        return adminService.createReceptionist(request);
+    }
+
+    @PutMapping("/receptionists/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ReceptionistResponse updateReceptionist(@PathVariable int id, @Valid @RequestBody fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistRequest request) {
+        return adminService.updateReceptionist(id, request);
+    }
+
+    @DeleteMapping("receptionists/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteReceptionist(@PathVariable String username) {
+        adminService.deleteReceptionist(username);
+    }
+
+    @GetMapping("/receptionists")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReceptionistResponse> getAllReceptionists() {
+        return adminService.getAllReceptionists();
     }
 }
