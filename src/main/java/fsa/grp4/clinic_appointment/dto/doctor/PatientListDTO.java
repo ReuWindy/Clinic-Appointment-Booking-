@@ -1,4 +1,4 @@
-package fsa.grp4.clinic_appointment.dto.doctorDashboard;
+package fsa.grp4.clinic_appointment.dto.doctor;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

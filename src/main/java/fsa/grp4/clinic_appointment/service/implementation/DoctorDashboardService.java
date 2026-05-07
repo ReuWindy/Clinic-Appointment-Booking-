@@ -1,8 +1,8 @@
 package fsa.grp4.clinic_appointment.service.implementation;
 
-import fsa.grp4.clinic_appointment.dto.doctorDashboard.AppointmentDTO;
-import fsa.grp4.clinic_appointment.dto.doctorDashboard.DashboardStatsDTO;
-import fsa.grp4.clinic_appointment.dto.doctorDashboard.PatientListDTO;
+import fsa.grp4.clinic_appointment.dto.doctor.AppointmentDTO;
+import fsa.grp4.clinic_appointment.dto.doctor.DashboardStatsDTO;
+import fsa.grp4.clinic_appointment.dto.doctor.PatientListDTO;
 import fsa.grp4.clinic_appointment.entity.Appointment;
 import fsa.grp4.clinic_appointment.entity.AppointmentStatus;
 import fsa.grp4.clinic_appointment.repository.contract.IAppointmentRepository;

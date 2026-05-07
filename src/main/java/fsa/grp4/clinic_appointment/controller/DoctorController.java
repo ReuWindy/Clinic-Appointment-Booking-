@@ -1,8 +1,8 @@
 package fsa.grp4.clinic_appointment.controller;
 
-import fsa.grp4.clinic_appointment.dto.doctorDashboard.AppointmentDTO;
-import fsa.grp4.clinic_appointment.dto.doctorDashboard.DashboardStatsDTO;
-import fsa.grp4.clinic_appointment.dto.doctorDashboard.PatientListDTO;
+import fsa.grp4.clinic_appointment.dto.doctor.AppointmentDTO;
+import fsa.grp4.clinic_appointment.dto.doctor.DashboardStatsDTO;
+import fsa.grp4.clinic_appointment.dto.doctor.PatientListDTO;
 import fsa.grp4.clinic_appointment.service.implementation.DoctorDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
