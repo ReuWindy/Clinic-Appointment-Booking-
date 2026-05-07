@@ -2,6 +2,8 @@ package fsa.grp4.clinic_appointment.service.contract;
 
 import java.util.List;
 
+import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistRequest;
+import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistResponse;
 import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyRequest;
 import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyResponse;
 
@@ -13,4 +15,12 @@ public interface IAdminService {
     void deleteSpecialty(int id);
 
     List<SpecialtyResponse> getAllSpecialties();
+
+    ReceptionistResponse createReceptionist(ReceptionistRequest request);
+
+    ReceptionistResponse updateReceptionist(int id, ReceptionistRequest request);
+
+    void deleteReceptionist(String username);
+
+    List<ReceptionistResponse> getAllReceptionists();
 }
