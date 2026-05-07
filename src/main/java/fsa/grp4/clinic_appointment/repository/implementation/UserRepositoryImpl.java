@@ -60,5 +60,14 @@ public class UserRepositoryImpl extends GenericRepositoryImpl<User, Integer> imp
         String jpql = "SELECT u FROM User u";
         return em.createQuery(jpql, User.class).getResultList();
     }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        String jpql = "SELECT COUNT(u) FROM User u WHERE u.email = :email";
+        Long count = em.createQuery(jpql, Long.class)
+                .setParameter("email", email)
+                .getSingleResult();
+        return count > 0;
+    }
 }
 
