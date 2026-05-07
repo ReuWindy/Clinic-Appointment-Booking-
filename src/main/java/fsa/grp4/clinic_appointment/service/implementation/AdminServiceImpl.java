@@ -3,11 +3,18 @@ package fsa.grp4.clinic_appointment.service.implementation;
 import java.util.List;
 import java.util.Optional;
 
+import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorRequest;
+import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorResponse;
+import fsa.grp4.clinic_appointment.entity.Doctor;
+import fsa.grp4.clinic_appointment.entity.Role;
+import fsa.grp4.clinic_appointment.entity.User;
+import fsa.grp4.clinic_appointment.mapper.AdminDoctorMapper;
+import fsa.grp4.clinic_appointment.repository.contract.IDoctorRepository;
+import fsa.grp4.clinic_appointment.repository.contract.IUserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import fsa.grp4.clinic_appointment.dao.contract.IUserDAO;
 import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistRequest;
 import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistResponse;
-import fsa.grp4.clinic_appointment.entity.Role;
-import fsa.grp4.clinic_appointment.entity.User;
 import fsa.grp4.clinic_appointment.mapper.IReceptionistMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,12 +38,30 @@ public class AdminServiceImpl implements IAdminService {
     private final IReceptionistMapper receptionistMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public AdminServiceImpl(ISpecialtyDAO specialtyDAO, SpecialtyMapper specialtyMapper, IUserDAO userDAO, IReceptionistMapper receptionistMapper, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    private final AdminDoctorMapper adminDoctorMapper;
+    private final IUserRepository iUserRepository;
+
+    private final IDoctorRepository iDoctorRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public AdminServiceImpl(ISpecialtyDAO specialtyDAO,
+                            SpecialtyMapper specialtyMapper,
+                            IUserDAO userDAO,
+                            IReceptionistMapper receptionistMapper,
+                            BCryptPasswordEncoder bCryptPasswordEncoder,
+                            AdminDoctorMapper adminDoctorMapper,
+                            IUserRepository iUserRepository,
+                            IDoctorRepository iDoctorRepository,
+                            PasswordEncoder passwordEncoder) {
         this.specialtyDAO = specialtyDAO;
         this.specialtyMapper = specialtyMapper;
         this.userDAO = userDAO;
         this.receptionistMapper = receptionistMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.adminDoctorMapper = adminDoctorMapper;
+        this.iUserRepository = iUserRepository;
+        this.iDoctorRepository = iDoctorRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -147,5 +172,78 @@ public class AdminServiceImpl implements IAdminService {
                 .filter(user -> user.getRole() == Role.RECEPTIONIST)
                 .toList();
         return receptionistMapper.toResponses(receptionists);
+    }
+
+    //******************************************************************************************
+
+    @Override
+    public AdminDoctorResponse createDoctor(AdminDoctorRequest request) {
+        if (iUserRepository.existsByEmail(request.getEmail())) {
+            throw new ConflictException("Email already exists");
+        }
+
+
+        User user = User.builder()
+                .fullName(request.getFullName())
+                .email(request.getEmail())
+                .username(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .phone(request.getPhone())
+                .address(request.getAddress())
+                .gender(request.isGender())
+                .role(Role.DOCTOR)
+                .build();
+        user = iUserRepository.add(user);
+
+        Specialty specialty = specialtyDAO.findById(request.getSpecialtyId())
+                .orElseThrow(() -> new NotFoundException("Specialty not found"));
+
+        Doctor doctor = Doctor.builder()
+                .user(user)
+                .specialty(specialty)
+                .fee(request.getFee())
+                .experience(request.getExperience())
+                .build();
+
+        Doctor savedDoctor = iDoctorRepository.save(doctor);
+        return adminDoctorMapper.toResponse(savedDoctor);
+    }
+
+    @Override
+    public AdminDoctorResponse updateDoctor(int id, AdminDoctorRequest request) {
+        Doctor existingDoctor = iDoctorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Doctor not found with id: " + id));
+
+        User user = existingDoctor.getUser();
+        user.setFullName(request.getFullName());
+        user.setPhone(request.getPhone());
+        user.setAddress(request.getAddress());
+        user.setGender(request.isGender());
+        iUserRepository.add(user);
+
+        if (existingDoctor.getSpecialty().getId() != request.getSpecialtyId()) {
+            Specialty specialty = specialtyDAO.findById(request.getSpecialtyId())
+                    .orElseThrow(() -> new NotFoundException("Specialty not found"));
+            existingDoctor.setSpecialty(specialty);
+        }
+        existingDoctor.setFee(request.getFee());
+        existingDoctor.setExperience(request.getExperience());
+
+        return adminDoctorMapper.toResponse(iDoctorRepository.save(existingDoctor));
+    }
+
+    @Override
+    public void deleteDoctor(int id) {
+        Doctor doctor = iDoctorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Doctor not found"));
+        iUserRepository.delete(doctor.getUser());
+    }
+
+    @Override
+    public List<AdminDoctorResponse> getAllDoctors() {
+        List<Doctor> doctors = iDoctorRepository.findAll();
+        return doctors.stream()
+                .map(adminDoctorMapper::toResponse)
+                .toList();
     }
 }

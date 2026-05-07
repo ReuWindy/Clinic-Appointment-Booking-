@@ -1,4 +1,4 @@
-package fsa.grp4.clinic_appointment.dto.doctor;
+package fsa.grp4.clinic_appointment.dto.patient;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -9,10 +9,10 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AppointmentDTO {
-    int id;
-    String patientName;
-    String serviceType;
+public class DoctorPatientListResponse {
     LocalTime time;
+    String patientName;
+    String gender;
+    int age; //fake
     String status;
 }

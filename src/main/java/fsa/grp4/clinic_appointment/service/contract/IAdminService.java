@@ -4,6 +4,8 @@ import java.util.List;
 
 import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistRequest;
 import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistResponse;
+import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorRequest;
+import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorResponse;
 import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyRequest;
 import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyResponse;
 
@@ -23,4 +25,13 @@ public interface IAdminService {
     void deleteReceptionist(String username);
 
     List<ReceptionistResponse> getAllReceptionists();
+
+    AdminDoctorResponse createDoctor(AdminDoctorRequest adminDoctorRequest);
+
+    AdminDoctorResponse updateDoctor(int id, AdminDoctorRequest adminDoctorRequest);
+
+    void deleteDoctor(int id);
+
+    List<AdminDoctorResponse> getAllDoctors();
+
 }
