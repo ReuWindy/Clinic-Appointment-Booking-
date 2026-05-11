@@ -1,5 +1,8 @@
 package fsa.grp4.clinic_appointment.security.mapper;
 
+import fsa.grp4.clinic_appointment.dto.patient.PatientRequest;
+import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistRequest;
+import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistResponse;
 import fsa.grp4.clinic_appointment.dto.user.UserResponse;
 import fsa.grp4.clinic_appointment.entity.User;
 import fsa.grp4.clinic_appointment.security.dto.AuthenticatedUserDto;
@@ -27,4 +30,6 @@ public interface UserMapper {
     UserResponse toUserResponse(User user);
 
     List<UserResponse> toUserResponses(List<User> users);
+
+
 }

@@ -2,12 +2,14 @@ package fsa.grp4.clinic_appointment.service.contract;
 
 import java.util.List;
 
+import fsa.grp4.clinic_appointment.dto.patient.PatientRequest;
 import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistRequest;
 import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistResponse;
 import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorRequest;
 import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorResponse;
 import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyRequest;
 import fsa.grp4.clinic_appointment.dto.specialty.SpecialtyResponse;
+import fsa.grp4.clinic_appointment.dto.user.UserResponse;
 
 public interface IAdminService {
     SpecialtyResponse createSpecialty(SpecialtyRequest specialtyRequest);
@@ -34,4 +36,9 @@ public interface IAdminService {
 
     List<AdminDoctorResponse> getAllDoctors();
 
+    public UserResponse updatePatient(int id, PatientRequest request);
+
+    public void deletePatient(String username);
+
+    List<UserResponse> getAllUsers();
 }

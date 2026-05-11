@@ -5,12 +5,16 @@ import java.util.Optional;
 
 import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorRequest;
 import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorResponse;
+import fsa.grp4.clinic_appointment.dto.patient.PatientRequest;
+import fsa.grp4.clinic_appointment.dto.user.UserResponse;
 import fsa.grp4.clinic_appointment.entity.Doctor;
 import fsa.grp4.clinic_appointment.entity.Role;
 import fsa.grp4.clinic_appointment.entity.User;
 import fsa.grp4.clinic_appointment.mapper.AdminDoctorMapper;
+import fsa.grp4.clinic_appointment.mapper.IPatientMapper;
 import fsa.grp4.clinic_appointment.repository.contract.IDoctorRepository;
 import fsa.grp4.clinic_appointment.repository.contract.IUserRepository;
+import fsa.grp4.clinic_appointment.security.mapper.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import fsa.grp4.clinic_appointment.dao.contract.IUserDAO;
 import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistRequest;
@@ -36,6 +40,7 @@ public class AdminServiceImpl implements IAdminService {
     private final SpecialtyMapper specialtyMapper;
     private final IUserDAO userDAO;
     private final IReceptionistMapper receptionistMapper;
+    private final IPatientMapper patientMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final AdminDoctorMapper adminDoctorMapper;
@@ -47,7 +52,7 @@ public class AdminServiceImpl implements IAdminService {
     public AdminServiceImpl(ISpecialtyDAO specialtyDAO,
                             SpecialtyMapper specialtyMapper,
                             IUserDAO userDAO,
-                            IReceptionistMapper receptionistMapper,
+                            IReceptionistMapper receptionistMapper, IPatientMapper patientMapper,
                             BCryptPasswordEncoder bCryptPasswordEncoder,
                             AdminDoctorMapper adminDoctorMapper,
                             IUserRepository iUserRepository,
@@ -57,6 +62,7 @@ public class AdminServiceImpl implements IAdminService {
         this.specialtyMapper = specialtyMapper;
         this.userDAO = userDAO;
         this.receptionistMapper = receptionistMapper;
+        this.patientMapper = patientMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.adminDoctorMapper = adminDoctorMapper;
         this.iUserRepository = iUserRepository;
@@ -174,8 +180,6 @@ public class AdminServiceImpl implements IAdminService {
         return receptionistMapper.toResponses(receptionists);
     }
 
-    //******************************************************************************************
-
     @Override
     public AdminDoctorResponse createDoctor(AdminDoctorRequest request) {
         if (iUserRepository.existsByEmail(request.getEmail())) {
@@ -245,5 +249,41 @@ public class AdminServiceImpl implements IAdminService {
         return doctors.stream()
                 .map(adminDoctorMapper::toResponse)
                 .toList();
+    }
+    @Override
+    public UserResponse updatePatient(int id, PatientRequest request) {
+        if (receptionistMapper == null) {
+            throw new IllegalArgumentException("Patient request cannot be null");
+        }
+
+        Optional<User> optionalUser = userDAO.getById(id);
+        if (optionalUser.isEmpty()) {
+            throw new NotFoundException("Patient not found with id: " + id);
+        }
+
+        User existingUser = optionalUser.get();
+        existingUser.setFullName(request.getFullName());
+        existingUser.setPhone(request.getPhoneNumber());
+        existingUser.setAddress(request.getAddress());
+        existingUser.setEmail(request.getEmail());
+        User updatedUser = userDAO.update(existingUser);
+        return patientMapper.toResponse(updatedUser);
+    }
+
+    @Override
+    public void deletePatient(String username) {
+        Optional<User> optionalUser = userDAO.findByUserName(username);
+        if (optionalUser.isEmpty()) {
+            throw new NotFoundException("Patient not found with id: " + username);
+        }
+        userDAO.deleteByUserName(username);
+    }
+
+    @Override
+    public List<UserResponse> getAllUsers() {
+        List<User> users = userDAO.getAll().stream()
+                .filter(user -> user.getRole() == Role.PATIENT)
+                .toList();
+        return patientMapper.toUserResponses(users);
     }
 }
