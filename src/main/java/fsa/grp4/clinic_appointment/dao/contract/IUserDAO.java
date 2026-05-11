@@ -18,5 +18,5 @@ public interface IUserDAO {
     List<User> getAll();
     Optional<User> existsByPhoneNumber(String phoneNumber);
     Page<User> search(Specification<User> specification, Pageable pageable);
-
+    Optional<User> deleteByUserName(String username);
 }

@@ -27,4 +27,5 @@ public class AdminDoctorResponse {
     String specialtyName;
     BigDecimal fee;
     String experience;
+    String avaUrl;
 }

@@ -4,8 +4,8 @@ import java.util.List;
 
 import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorRequest;
 import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorResponse;
+import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -79,4 +79,28 @@ public class AdminController {
         return adminService.getAllDoctors();
     }
 
+
+    @PostMapping("/receptionists")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReceptionistResponse createReceptionist(@Valid @RequestBody fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistRequest request) {
+        return adminService.createReceptionist(request);
+    }
+
+    @PutMapping("/receptionists/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ReceptionistResponse updateReceptionist(@PathVariable int id, @Valid @RequestBody fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistRequest request) {
+        return adminService.updateReceptionist(id, request);
+    }
+
+    @DeleteMapping("receptionists/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteReceptionist(@PathVariable String username) {
+        adminService.deleteReceptionist(username);
+    }
+
+    @GetMapping("/receptionists")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReceptionistResponse> getAllReceptionists() {
+        return adminService.getAllReceptionists();
+    }
 }

@@ -56,4 +56,7 @@ public class Doctor extends BaseEntity {
 
     @Column(columnDefinition = "text")
     String experience;
+
+    @Column(columnDefinition = "ava_url")
+    String avaUrl;
 }
