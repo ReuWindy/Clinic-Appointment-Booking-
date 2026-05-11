@@ -25,4 +25,5 @@ public class AdminDoctorRequest {
     int specialtyId;
     BigDecimal fee;
     String experience;
+    String avaUrl;
 }
