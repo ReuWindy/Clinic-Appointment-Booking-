@@ -207,6 +207,7 @@ public class AdminServiceImpl implements IAdminService {
                 .specialty(specialty)
                 .fee(request.getFee())
                 .experience(request.getExperience())
+                .avaUrl(request.getAvaUrl())
                 .build();
 
         Doctor savedDoctor = iDoctorRepository.save(doctor);
@@ -232,6 +233,7 @@ public class AdminServiceImpl implements IAdminService {
         }
         existingDoctor.setFee(request.getFee());
         existingDoctor.setExperience(request.getExperience());
+        existingDoctor.setAvaUrl(request.getAvaUrl());
 
         return adminDoctorMapper.toResponse(iDoctorRepository.save(existingDoctor));
     }
