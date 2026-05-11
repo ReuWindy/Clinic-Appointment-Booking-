@@ -5,6 +5,7 @@ import java.util.List;
 import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorRequest;
 import fsa.grp4.clinic_appointment.dto.doctor.AdminDoctorResponse;
 import fsa.grp4.clinic_appointment.dto.receptionist.ReceptionistResponse;
+import fsa.grp4.clinic_appointment.dto.user.UserResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -102,5 +103,23 @@ public class AdminController {
     @ResponseStatus(HttpStatus.OK)
     public List<ReceptionistResponse> getAllReceptionists() {
         return adminService.getAllReceptionists();
+    }
+
+    @PutMapping("/patients/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse updateReceptionist(@PathVariable int id, @Valid @RequestBody fsa.grp4.clinic_appointment.dto.patient.PatientRequest request) {
+        return adminService.updatePatient(id, request);
+    }
+
+    @DeleteMapping("patients/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deletePatient(@PathVariable String username) {
+        adminService.deletePatient(username);
+    }
+
+    @GetMapping("/patients")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserResponse> getAllUsers() {
+        return adminService.getAllUsers();
     }
 }
