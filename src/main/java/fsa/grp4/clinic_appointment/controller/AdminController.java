@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/admin")
-// @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
     private final IAdminService adminService;
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -53,8 +54,10 @@ public class SecurityConfig {
                                                                 "/api/auth/**"
 
                                                 ).permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/admin/specialties").hasAnyRole("ADMIN", "RECEPTIONIST")
                                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                                 .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
+                                                .requestMatchers("/api/receptionist/**").hasRole("RECEPTIONIST")
                                                 .anyRequest().authenticated())
                                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
                 return http.build();
