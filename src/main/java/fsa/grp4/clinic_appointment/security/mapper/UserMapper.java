@@ -25,7 +25,7 @@ public interface UserMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntity(@MappingTarget User user, UpdateUserRequest request);
 
-    @Mapping(source = "phone", target = "phoneNumber")
+    @Mapping(source = "phone", target = "phone")
     @Mapping(source = "isActive", target = "active")
     UserResponse toUserResponse(User user);
 

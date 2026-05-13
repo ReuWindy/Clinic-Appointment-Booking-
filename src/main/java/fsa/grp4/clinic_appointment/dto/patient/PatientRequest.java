@@ -14,6 +14,6 @@ import java.time.LocalDateTime;
 public class PatientRequest {
     private String fullName;
     private String email;
-    private String phoneNumber;
+    private String phone;
     private String address;
 }

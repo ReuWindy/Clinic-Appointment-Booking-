@@ -265,7 +265,7 @@ public class AdminServiceImpl implements IAdminService {
 
         User existingUser = optionalUser.get();
         existingUser.setFullName(request.getFullName());
-        existingUser.setPhone(request.getPhoneNumber());
+        existingUser.setPhone(request.getPhone());
         existingUser.setAddress(request.getAddress());
         existingUser.setEmail(request.getEmail());
         User updatedUser = userDAO.update(existingUser);
