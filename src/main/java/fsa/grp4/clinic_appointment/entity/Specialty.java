@@ -32,4 +32,8 @@ public class Specialty extends BaseEntity {
 
     @Column(columnDefinition = "text")
     String description;
+
+    @Builder.Default
+    @jakarta.persistence.OneToMany(mappedBy = "specialty", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    java.util.List<Doctor> doctors = new java.util.ArrayList<>();
 }

@@ -47,7 +47,7 @@ public class Doctor extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "specialty_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     Specialty specialty;
 
     @Builder.Default
@@ -59,4 +59,8 @@ public class Doctor extends BaseEntity {
 
     @Column(columnDefinition = "ava_url")
     String avaUrl;
+
+    @Builder.Default
+    @jakarta.persistence.OneToMany(mappedBy = "doctor", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    java.util.List<DoctorSchedule> schedules = new java.util.ArrayList<>();
 }
