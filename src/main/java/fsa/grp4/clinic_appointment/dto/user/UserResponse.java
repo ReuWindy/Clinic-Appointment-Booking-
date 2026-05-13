@@ -23,7 +23,8 @@ public class UserResponse {
 
     private boolean gender;
     private String email;
-    private String phoneNumber;
+    private String phone;
+    private String address;
 
     private boolean active;
 
