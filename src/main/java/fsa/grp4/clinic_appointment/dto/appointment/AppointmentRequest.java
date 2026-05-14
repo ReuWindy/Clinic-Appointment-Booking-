@@ -1,6 +1,7 @@
 package fsa.grp4.clinic_appointment.dto.appointment;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,11 +14,12 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppointmentRequest {
-    int patientId;
+    Integer patientId;
     String patientName;
 
     @NotNull(message = "Doctor ID is required")
-    int doctorId;
+    @Min(value = 1, message = "Please select a valid doctor")
+    Integer doctorId;
 
     @NotNull(message = "Appointment date is required")
     LocalDate appointmentDate;

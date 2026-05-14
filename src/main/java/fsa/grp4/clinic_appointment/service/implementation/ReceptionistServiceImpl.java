@@ -119,13 +119,13 @@ public class ReceptionistServiceImpl implements IReceptionistService {
     @org.springframework.transaction.annotation.Transactional
     public AppointmentResponse createAppointment(AppointmentRequest request) {
         // 1. Check if slot is already taken
-        if (appointmentRepository.existsByDoctorIdAndAppointmentDateAndAppointmentTime(
+        if (appointmentRepository.existsActiveSlot(
                 request.getDoctorId(), request.getAppointmentDate(), request.getAppointmentTime())) {
             throw new ConflictException("Ca này đã có lịch, vui lòng chọn ca khác");
         }
 
         User patient;
-        if (request.getPatientId() > 0) {
+        if (request.getPatientId() != null && request.getPatientId() > 0) {
             patient = userRepository.getById(request.getPatientId())
                     .orElseThrow(() -> new NotFoundException("Patient not found"));
         } else {
@@ -199,8 +199,11 @@ public class ReceptionistServiceImpl implements IReceptionistService {
     private AppointmentResponse mapToAppointmentResponse(Appointment appointment) {
         return AppointmentResponse.builder()
                 .id(appointment.getId())
+                .patientId(appointment.getPatient().getId())
+                .doctorId(appointment.getDoctor().getId())
                 .patientName(appointment.getPatient().getFullName())
                 .doctorName(appointment.getDoctor().getUser().getFullName())
+                .specialtyName(appointment.getDoctor().getSpecialty().getName())
                 .appointmentDate(appointment.getAppointmentDate())
                 .appointmentTime(appointment.getAppointmentTime())
                 .reason(appointment.getReason())

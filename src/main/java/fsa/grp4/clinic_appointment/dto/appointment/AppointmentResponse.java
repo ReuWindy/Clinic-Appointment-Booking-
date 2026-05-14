@@ -15,8 +15,11 @@ import java.time.LocalTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppointmentResponse {
     int id;
+    int patientId;
+    int doctorId;
     String patientName;
     String doctorName;
+    String specialtyName;
     @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate appointmentDate;
     @JsonFormat(pattern = "HH:mm")
