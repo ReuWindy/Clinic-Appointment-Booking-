@@ -154,6 +154,7 @@ public class PatientAppointmentServiceImpl implements IPatientAppointmentService
                 .appointmentDate(appointment.getAppointmentDate())
                 .appointmentTime(appointment.getAppointmentTime())
                 .reason(appointment.getReason())
+                .diagnosis(appointment.getDiagnosis())
                 .status(appointment.getStatus())
                 .build();
     }

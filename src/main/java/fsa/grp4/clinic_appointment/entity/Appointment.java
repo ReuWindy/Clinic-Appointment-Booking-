@@ -1,5 +1,11 @@
 package fsa.grp4.clinic_appointment.entity;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,11 +25,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -64,6 +65,9 @@ public class Appointment extends BaseEntity {
 
     @Column(columnDefinition = "text")
     String reason;
+
+    @Column(columnDefinition = "text")
+    String diagnosis;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
