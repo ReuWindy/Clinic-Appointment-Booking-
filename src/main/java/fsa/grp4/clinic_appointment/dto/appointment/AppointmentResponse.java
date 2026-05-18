@@ -1,12 +1,17 @@
 package fsa.grp4.clinic_appointment.dto.appointment;
 
-import fsa.grp4.clinic_appointment.entity.AppointmentStatus;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import fsa.grp4.clinic_appointment.entity.AppointmentStatus;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @Builder
@@ -25,5 +30,6 @@ public class AppointmentResponse {
     @JsonFormat(pattern = "HH:mm")
     LocalTime appointmentTime;
     String reason;
+    String diagnosis;
     AppointmentStatus status;
 }

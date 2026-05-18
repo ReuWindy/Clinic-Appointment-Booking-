@@ -1,13 +1,17 @@
 package fsa.grp4.clinic_appointment.service.implementation;
 
+import fsa.grp4.clinic_appointment.dto.appointment.DoctorAppointmentStatusUpdateRequest;
 import fsa.grp4.clinic_appointment.dto.appointment.DoctorAppointmentResponse;
 import fsa.grp4.clinic_appointment.dto.doctor.DashboardStatsDTO;
 import fsa.grp4.clinic_appointment.dto.patient.DoctorPatientListResponse;
 import fsa.grp4.clinic_appointment.entity.Appointment;
 import fsa.grp4.clinic_appointment.entity.AppointmentStatus;
+import fsa.grp4.clinic_appointment.exception.ConflictException;
+import fsa.grp4.clinic_appointment.exception.NotFoundException;
 import fsa.grp4.clinic_appointment.repository.contract.IAppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -46,6 +50,7 @@ public class DoctorDashboardService {
                 .time(app.getAppointmentTime())
                 .status(app.getStatus().name())
                 .serviceType(app.getReason())
+            .diagnosis(app.getDiagnosis())
                 .build()).toList();
     }
 
@@ -65,5 +70,50 @@ public class DoctorDashboardService {
                     .status(app.getStatus().name())
                 .build();
         }).toList();
+    }
+
+    @Transactional
+    public DoctorAppointmentResponse updateAppointmentStatus(
+            int doctorId,
+            int appointmentId,
+            DoctorAppointmentStatusUpdateRequest request
+    ) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new NotFoundException("Appointment not found"));
+
+        if (appointment.getDoctor().getId() != doctorId) {
+            throw new NotFoundException("Appointment not found for this doctor");
+        }
+
+        if (appointment.getStatus() == AppointmentStatus.COMPLETED) {
+            throw new ConflictException("Completed appointment cannot be modified");
+        }
+
+        if (request.getStatus() != AppointmentStatus.COMPLETED) {
+            throw new IllegalArgumentException("Doctor can only mark appointment as COMPLETED");
+        }
+
+        String incomingDiagnosis = request.getDiagnosis();
+        if (incomingDiagnosis != null) {
+            incomingDiagnosis = incomingDiagnosis.trim();
+            appointment.setDiagnosis(incomingDiagnosis.isEmpty() ? null : incomingDiagnosis);
+        }
+
+        String diagnosisForCompletion = appointment.getDiagnosis();
+        if (diagnosisForCompletion == null || diagnosisForCompletion.trim().isEmpty()) {
+            throw new IllegalArgumentException("Diagnosis is required before completing appointment");
+        }
+
+        appointment.setStatus(request.getStatus());
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        return DoctorAppointmentResponse.builder()
+                .id(savedAppointment.getId())
+                .patientName(savedAppointment.getPatient().getFullName())
+                .serviceType(savedAppointment.getReason())
+                .diagnosis(savedAppointment.getDiagnosis())
+                .time(savedAppointment.getAppointmentTime())
+                .status(savedAppointment.getStatus().name())
+                .build();
     }
 }

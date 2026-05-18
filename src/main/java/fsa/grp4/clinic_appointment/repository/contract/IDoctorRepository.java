@@ -30,4 +30,7 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Integer> {
 
     @Query("SELECT d FROM Doctor d JOIN d.schedules s WHERE s.id = :scheduleId")
     Optional<Doctor> findByScheduleId(@Param("scheduleId") int scheduleId);
+
+    @Query("SELECT d FROM Doctor d WHERE d.user.username = :username")
+    Optional<Doctor> findByUserUsername(@Param("username") String username);
 }
