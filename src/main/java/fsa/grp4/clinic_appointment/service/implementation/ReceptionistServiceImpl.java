@@ -17,6 +17,7 @@ import fsa.grp4.clinic_appointment.entity.AppointmentStatus;
 import fsa.grp4.clinic_appointment.repository.contract.IAppointmentRepository;
 import fsa.grp4.clinic_appointment.repository.contract.IDoctorRepository;
 import fsa.grp4.clinic_appointment.repository.contract.IUserRepository;
+import fsa.grp4.clinic_appointment.security.service.EmailService;
 import fsa.grp4.clinic_appointment.service.contract.IReceptionistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ public class ReceptionistServiceImpl implements IReceptionistService {
     private final IAppointmentRepository appointmentRepository;
     private final IUserRepository userRepository;
     private final AdminDoctorMapper adminDoctorMapper;
+    private final EmailService emailService;
 
     @Override
     @org.springframework.transaction.annotation.Transactional
@@ -161,8 +163,15 @@ public class ReceptionistServiceImpl implements IReceptionistService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new NotFoundException("Appointment not found"));
 
+        AppointmentStatus currentStatus = appointment.getStatus();
         appointment.setStatus(request.getStatus());
         Appointment updatedAppointment = appointmentRepository.save(appointment);
+
+        if (currentStatus != AppointmentStatus.CONFIRMED
+                && updatedAppointment.getStatus() == AppointmentStatus.CONFIRMED) {
+            sendAppointmentConfirmedEmail(updatedAppointment);
+        }
+
         return mapToAppointmentResponse(updatedAppointment);
     }
 
@@ -210,5 +219,21 @@ public class ReceptionistServiceImpl implements IReceptionistService {
                 .diagnosis(appointment.getDiagnosis())
                 .status(appointment.getStatus())
                 .build();
+    }
+
+    private void sendAppointmentConfirmedEmail(Appointment appointment) {
+        String patientEmail = appointment.getPatient().getEmail();
+        if (patientEmail == null || patientEmail.isBlank()) {
+            log.warn("Appointment confirmation email skipped because patient email is empty. appointmentId={}",
+                    appointment.getId());
+            return;
+        }
+
+        try {
+            emailService.sendAppointmentConfirmedEmail(appointment);
+        } catch (Exception e) {
+            log.error("Failed to send appointment confirmation email. appointmentId={}, email={}",
+                    appointment.getId(), patientEmail, e);
+        }
     }
 }

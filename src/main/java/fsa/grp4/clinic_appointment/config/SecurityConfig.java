@@ -51,10 +51,12 @@ public class SecurityConfig {
                                                                 "/v3/api-docs/**",
                                                                 "/swagger-ui/**",
                                                                 "/swagger-ui.html",
-                                                                "/api/auth/**"
+                                                                "/api/auth/**",
+                                                                "/actuator/**"
 
                                                 ).permitAll()
-                                                .requestMatchers(HttpMethod.GET, "/api/admin/specialties").hasAnyRole("ADMIN", "RECEPTIONIST")
+                                                .requestMatchers(HttpMethod.GET, "/api/admin/specialties")
+                                                .hasAnyRole("ADMIN", "RECEPTIONIST")
                                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                                 .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
                                                 .requestMatchers("/api/receptionist/**").hasRole("RECEPTIONIST")
@@ -69,7 +71,9 @@ public class SecurityConfig {
                 CorsConfiguration configuration = new CorsConfiguration();
                 configuration.setAllowedOrigins(List.of(
                                 "http://localhost:5173",
-                                "http://127.0.0.1:5173"));
+                                "http://127.0.0.1:5173",
+                                "http://localhost:1734",
+                                "http://127.0.0.1:4173"));
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(List.of("*"));
                 configuration.setAllowCredentials(true);

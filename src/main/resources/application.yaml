@@ -56,3 +56,12 @@ jwt:
 
 google:
   client-id: 674544856247-s4fkj638dt6rqcs154tg8dpr8sbkivp5.apps.googleusercontent.com
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - metrics
