@@ -65,3 +65,8 @@ management:
           - health
           - info
           - metrics
+
+internal:
+  api:
+    base-url: ${INTERNAL_API_BASE_URL:http://localhost:8080}
+    admin-token: ${INTERNAL_ADMIN_TOKEN:}

@@ -17,5 +17,5 @@ public class ClinicAppointmentApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ClinicAppointmentApplication.class, args);
 	}
-
+	
 }
